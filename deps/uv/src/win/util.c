@@ -478,6 +478,26 @@ uint64_t uv__hrtime(double scale) {
   return (uint64_t) ((double) counter.QuadPart * hrtime_interval_ * scale);
 }
 
+uint64_t uv__hrtime_ex(double scale, int64_t* raw) {
+  LARGE_INTEGER counter;
+
+  /* If the performance interval is zero, there's no support. */
+  if (hrtime_interval_ == 0) {
+    return 0;
+  }
+
+  if (!QueryPerformanceCounter(&counter)) {
+    return 0;
+  }
+  *raw = counter.QuadPart;
+
+  /* Because we have no guarantee about the order of magnitude of the
+   * performance counter interval, integer math could cause this computation
+   * to overflow. Therefore we resort to floating point math.
+   */
+  return (uint64_t) ((double) counter.QuadPart * hrtime_interval_ * scale);
+}
+
 
 int uv_resident_set_memory(size_t* rss) {
   HANDLE current_process;
