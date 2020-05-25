@@ -86,7 +86,7 @@ void uv__util_init(void) {
   if (QueryPerformanceFrequency(&perf_frequency)) {
     hrtime_interval_ = 1.0 / perf_frequency.QuadPart;
   } else {
-    hrtime_interval_= 0;
+    uv_fatal_error(GetLastError(), "QueryPerformanceFrequency");
   }
 }
 
@@ -493,13 +493,9 @@ uint64_t uv_hrtime(void) {
 uint64_t uv__hrtime(double scale) {
   LARGE_INTEGER counter;
 
-  /* If the performance interval is zero, there's no support. */
-  if (hrtime_interval_ == 0) {
-    return 0;
-  }
-
+  assert(hrtime_interval_ != 0);
   if (!QueryPerformanceCounter(&counter)) {
-    return 0;
+    uv_fatal_error(GetLastError(), "QueryPerformanceCounter");
   }
 
   /* Because we have no guarantee about the order of magnitude of the
