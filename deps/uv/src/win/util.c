@@ -67,8 +67,8 @@ extern BOOLEAN NTAPI SystemFunction036(PVOID Buffer, ULONG BufferLength);
 static char *process_title;
 static CRITICAL_SECTION process_title_lock;
 
-/* Interval (in seconds) of the high-resolution clock. */
-static double hrtime_interval_ = 0;
+/* Frequency of the high-resolution clock. */
+static uint64_t hrtime_frequency_ = 0;
 
 
 /*
@@ -84,7 +84,7 @@ void uv__util_init(void) {
    * and precompute its reciprocal.
    */
   if (QueryPerformanceFrequency(&perf_frequency)) {
-    hrtime_interval_ = 1.0 / perf_frequency.QuadPart;
+    hrtime_frequency_ = perf_frequency.QuadPart;
   } else {
     uv_fatal_error(GetLastError(), "QueryPerformanceFrequency");
   }
@@ -493,18 +493,20 @@ uint64_t uv_hrtime(void) {
 uint64_t uv__hrtime(double scale) {
   LARGE_INTEGER counter;
 
-  assert(hrtime_interval_ != 0);
+  assert(hrtime_frequency_ != 0);
+  assert(scale != 0);
   if (!QueryPerformanceCounter(&counter)) {
     uv_fatal_error(GetLastError(), "QueryPerformanceCounter");
   }
   assert(counter.QuadPart != 0);
-  assert(scale != 0);
 
   /* Because we have no guarantee about the order of magnitude of the
    * performance counter interval, integer math could cause this computation
    * to overflow. Therefore we resort to floating point math.
    */
-  return (uint64_t) ((double) counter.QuadPart * hrtime_interval_ * scale);
+  double scaled_freq = hrtime_frequency_ / scale;
+  double result = (double) counter.QuadPart / scaled_freq;
+  return (uint64_t) result;
 }
 
 
