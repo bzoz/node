@@ -497,6 +497,8 @@ uint64_t uv__hrtime(double scale) {
   if (!QueryPerformanceCounter(&counter)) {
     uv_fatal_error(GetLastError(), "QueryPerformanceCounter");
   }
+  assert(counter.QuadPart != 0);
+  assert(scale != 0);
 
   /* Because we have no guarantee about the order of magnitude of the
    * performance counter interval, integer math could cause this computation
