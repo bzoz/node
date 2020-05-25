@@ -490,7 +490,7 @@ uint64_t uv_hrtime(void) {
   return uv__hrtime(UV__NANOSEC);
 }
 
-uint64_t uv__hrtime(double scale) {
+uint64_t uv__hrtime(unsigned int scale) {
   LARGE_INTEGER counter;
 
   assert(hrtime_frequency_ != 0);
@@ -504,7 +504,7 @@ uint64_t uv__hrtime(double scale) {
    * performance counter interval, integer math could cause this computation
    * to overflow. Therefore we resort to floating point math.
    */
-  double scaled_freq = hrtime_frequency_ / scale;
+  double scaled_freq = (double)hrtime_frequency_ / scale;
   double result = (double) counter.QuadPart / scaled_freq;
   return (uint64_t) result;
 }
