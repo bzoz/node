@@ -237,7 +237,6 @@ int uv_loop_init(uv_loop_t* loop) {
    * to zero before calling uv_update_time for the first time.
    */
   loop->time = 0;
-  loop->raw_time = 0;
   uv_update_time(loop);
 
   QUEUE_INIT(&loop->wq);
@@ -306,21 +305,16 @@ fail_timers_alloc:
 
 
 void uv_update_time(uv_loop_t* loop) {
-  int64_t new_raw;
-  uint64_t new_time = uv__hrtime_ex(1000, &new_raw);
+  uint64_t new_time = uv__hrtime(1000);
   if (new_time < loop->time) {
-    fprintf(stderr, "Time error:\n"
-                    "\tnew_time:       %lld\n"
-                    "\tnew_raw:        %lld\n"
-                    "\tloop->time:     %lld\n"
-                    "\tloop->raw_time: %lld\n"
-                    "\tGetLastError:   %d\n",
-            new_time, new_raw, loop->time, loop->raw_time, GetLastError());
-    fflush(stderr);
+    fprintf(stderr,
+            "Error: uv__hrtime went from %lld to %lld\n",
+            loop->time,
+            new_time);
+    DebugBreak();
+    abort();
   }
-  assert(new_time >= loop->time);
   loop->time = new_time;
-  loop->raw_time = new_raw;
 }
 
 
