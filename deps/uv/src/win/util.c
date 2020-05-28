@@ -465,6 +465,7 @@ uint64_t uv_hrtime(void) {
 uint64_t uv__hrtime(double scale) {
   LARGE_INTEGER counter;
 
+  assert(scale != 0);
   /* If the performance interval is zero, there's no support. */
   if (hrtime_interval_ == 0) {
     return 0;
