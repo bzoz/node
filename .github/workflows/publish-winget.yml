@@ -1,0 +1,12 @@
+name: publish-winget
+
+on:
+  relase:
+    types: [published]
+
+jobs:
+  publish-winget:
+    runs-on: ubuntu-latest
+    steps:
+      - name Show enviroment
+      - run: echo ${GITHUB_REF}
