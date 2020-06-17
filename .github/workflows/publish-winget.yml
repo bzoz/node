@@ -36,7 +36,7 @@ jobs:
       #    fi
   publish-winget:
     runs-on: ubuntu-latest
-    needs: package_exists, job1
+    needs: [package_exists, job1]
     #if: needs.check-exits.outpus.exists == 'not-exists'
     steps:
       - name: Greet
