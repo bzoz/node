@@ -12,13 +12,14 @@ jobs:
     steps:
       - id: check-exists
         name: Check if there is Node.js package already in the winget-pckgs repo
-        env:
-          VERSION: ${GITHUB_REF:11}
         run: |
+          VERSION=${GITHUB_REF:11} 
           echo Looking for https://github.com/microsoft/winget-pkgs/blob/master/manifests/OpenJS/NodeJS/$VERSION.yaml
           if curl --output /dev/null --head --fail https://github.com/microsoft/winget-pkgs/blob/master/manifests/OpenJS/NodeJS/$VERSION.yaml; then
+            echo "YAML exits, skipping generation"
             echo "::set-output name=exists::exists"
           else
+            echo "YAML does not exists, will generate"
             echo "::set-output name=exists::not-exists"
           fi
   publish-winget:
