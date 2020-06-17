@@ -5,27 +5,14 @@ on:
     types: [published]
 
 jobs:
-  package_exists:
+  publish-winget:
     runs-on: ubuntu-latest
-    outputs: 
-      exists: ${{ steps.check.outputs.exists }}
     steps:
-      - id: check
+      - name: Test if the package isn't already published
         run: |
           VERSION=${GITHUB_REF:11}
           echo Looking for https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/OpenJS/NodeJS/$VERSION.yaml
           if curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/OpenJS/NodeJS/$VERSION.yaml; then
-            echo "YAML exits, skipping generation"
-            echo "::set-output name=exists::exists"
-          else
-            echo "YAML does not exists, will generate"
-            echo "::set-output name=exists::not-exists"
+            echo "Package already exists, exiting"
+            exit 1
           fi
-  publish-winget:
-    runs-on: ubuntu-latest
-    needs: package_exists
-    if: needs.package_exists.outputs.exists == 'not-exists'
-    steps:
-      - name: Greet
-        run: echo ${{needs.package_exists.outputs.exists}}
-
