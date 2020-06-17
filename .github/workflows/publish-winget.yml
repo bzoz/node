@@ -5,8 +5,23 @@ on:
     types: [published]
 
 jobs:
+  check-exists:
+    runs-on: ubuntu-latest
+    outputs: 
+      exists: ${{ steps.check-exists.exists }}
+    steps:
+      - id: check-exists
+        name: Check if there is Node.js package already in the winget-pckgs repo
+        run: |
+          if curl --output /dev/null --silent --head --fail https://github.com/microsoft/winget-pkgs/blob/master/manifests/OpenJS/NodeJS/${GIHUB_REF:11}.yaml; then
+            echo "::set-output name=exists::exists"
+          else
+            echo "::set-output name=exists::not-exists"
+          fi
   publish-winget:
     runs-on: ubuntu-latest
+    needs: check-exists
+    if: needs.check-exits.outpus.exists == 'not-exists'
     steps:
-      - name: Show enviroment
-        run: echo ${GITHUB_REF:11}
+      - name: Greet
+        run: echo Hello!
