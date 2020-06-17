@@ -9,4 +9,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Show enviroment
-        run: echo ${GITHUB_REF}
+        run: echo ${GITHUB_REF:10}
