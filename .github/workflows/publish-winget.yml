@@ -13,8 +13,8 @@ jobs:
       - id: check
         run: |
           VERSION=${GITHUB_REF:11} 
-          echo Looking for https://github.com/microsoft/winget-pkgs/blob/master/manifests/OpenJS/NodeJS/$VERSION.yaml
-          if curl --output /dev/null --silient --head --fail https://github.com/microsoft/winget-pkgs/blob/master/manifests/OpenJS/NodeJS/$VERSION.yaml; then
+          echo Looking for https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/OpenJS/NodeJS/$VERSION.yaml
+          if curl --output /dev/null --silient --head --fail https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/OpenJS/NodeJS/$VERSION.yaml; then
             echo "YAML exits, skipping generation"
             echo "::set-output name=exists::exists"
           else
