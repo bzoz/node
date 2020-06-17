@@ -62,9 +62,9 @@ jobs:
           git push https://${{ secrets.WINGET_WORKER_NAME }}:${{ secrets.WINGET_WORKER_PAT }}@github.com/${{ secrets.WINGET_WORKER_NAME }}/winget-pkgs add-v$VERSION
       - name: Open PR
         run: |
-          curl --request POST
-               --url "https://api.github.com/repos/${{ secrets.WINGET_UPSTREAM_REPO }}/pulls"
-               --header "authorization: Bearer ${{ secrets.WINGET_WORKER_PAT }}"
+          curl --request POST \
+               --url "https://api.github.com/repos/${{ secrets.WINGET_UPSTREAM_REPO }}/pulls" \
+               --header "authorization: Bearer ${{ secrets.WINGET_WORKER_PAT }}" \
                --header 'content-type: application/json' \
                --data "{ \
                         \"title\": \"Node.js v$VERSION\", \
