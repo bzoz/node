@@ -16,11 +16,11 @@ jobs:
   package_exists:
     runs-on: ubuntu-latest
     outputs: 
-      exists:  ${{ steps.check.exists }}
+      exists:  ${{ steps.check.test }}
       output1: ${{ steps.step1.outputs.test }}
     steps:
       - id: check
-        run: echo "::set-output name=exists::yes"
+        run: echo "::set-output name=test::hello"
       - id: step1
         run: echo "::set-output name=test::hello"
       #    VERSION=${GITHUB_REF:11} 
