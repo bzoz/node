@@ -5,27 +5,29 @@ on:
     types: [published]
 
 jobs:
-  check-exists:
+  check_exists:
     runs-on: ubuntu-latest
     outputs: 
-      exists: ${{ steps.check-exists.exists }}
+      exists: ${{ steps.check_exists.exists }}
     steps:
-      - id: check-exists
+      - id: check_exists
         name: Check if there is Node.js package already in the winget-pckgs repo
         run: |
-          VERSION=${GITHUB_REF:11} 
-          echo Looking for https://github.com/microsoft/winget-pkgs/blob/master/manifests/OpenJS/NodeJS/$VERSION.yaml
-          if curl --output /dev/null --head --fail https://github.com/microsoft/winget-pkgs/blob/master/manifests/OpenJS/NodeJS/$VERSION.yaml; then
-            echo "YAML exits, skipping generation"
-            echo "::set-output name=exists::exists"
-          else
-            echo "YAML does not exists, will generate"
-            echo "::set-output name=exists::not-exists"
-          fi
+          echo "::set-output name=exists::yes"
+      #    VERSION=${GITHUB_REF:11} 
+      #    echo Looking for https://github.com/microsoft/winget-pkgs/blob/master/manifests/OpenJS/NodeJS/$VERSION.yaml
+      #    if curl --output /dev/null --head --fail https://github.com/microsoft/winget-pkgs/blob/master/manifests/OpenJS/NodeJS/$VERSION.yaml; then
+      #      echo "YAML exits, skipping generation"
+      #      echo "::set-output name=exists::exists"
+      #    else
+      #      echo "YAML does not exists, will generate"
+      #      echo "::set-output name=exists::not-exists"
+      #    fi
+      #- run: 
   publish-winget:
     runs-on: ubuntu-latest
-    needs: check-exists
+    needs: check_exists
     #if: needs.check-exits.outpus.exists == 'not-exists'
     steps:
       - name: Greet
-        run: echo ${{needs.check-exits.outpus.exists}}
+        run: echo ${{needs.check_exists.outpus.exists}}
