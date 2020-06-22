@@ -67,7 +67,7 @@ jobs:
                --header "authorization: Bearer ${{ secrets.WINGET_WORKER_PAT }}" \
                --header 'content-type: application/json' \
                --data "{ \
-                        \"title\": \"Node.js v$VERSION\", \
+                        \"title\": \"Add Node.js v$VERSION\", \
                         \"body\": \"Add Node.js installer $VERSION\", \
                         \"head\": \"${{ secrets.WINGET_WORKER_NAME }}:add-v$VERSION\", \
                         \"base\": \"master\" \
